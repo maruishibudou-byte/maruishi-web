@@ -1,0 +1,9 @@
+{
+  "name": "maruishi-web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "まるいし葡萄園 公式サイト",
+  "dependencies": {
+    "stripe": "^16.0.0"
+  }
+}
