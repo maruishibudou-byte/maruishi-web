@@ -1,11 +1,11 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 /*
- * 価格マスタ（サーバー側で検証）
- * クライアントから送られてくる価格は一切信用しない。
- * 商品を追加・変更したらここも必ず更新する。
+ * 価格マスタ（フォールバック用）
+ * SHEETS_PRODUCTS_URL が未設定の場合のみ使用。
+ * スプレッドシート設定後はここを変更しなくてよい。
  */
-const PRICE_MASTER = {
+const PRICE_MASTER_FALLBACK = {
   'シャインマスカット':       3800,
   'キタサキレッド':           3500,
   '巨峰':                    2800,
@@ -14,6 +14,61 @@ const PRICE_MASTER = {
   'ギフトボックス 3房セット': 9800,
 };
 
+/* 価格キャッシュ（5分） */
+let _priceCache = null;
+let _priceCacheTime = 0;
+
+/* Google Sheets CSV パーサー */
+function parseCSV(text) {
+  const lines = text.trim().split(/\r?\n/);
+  const headers = splitCells(lines[0]).map(h => h.trim());
+  const rows = [];
+  for (let i = 1; i < lines.length; i++) {
+    const cells = splitCells(lines[i]);
+    if (cells.every(c => !c.trim())) continue;
+    rows.push(Object.fromEntries(headers.map((h, j) => [h, (cells[j] || '').trim()])));
+  }
+  return rows;
+}
+
+function splitCells(line) {
+  const cells = []; let cell = '', inQ = false;
+  for (const ch of line) {
+    if (ch === '"') inQ = !inQ;
+    else if (ch === ',' && !inQ) { cells.push(cell); cell = ''; }
+    else cell += ch;
+  }
+  cells.push(cell);
+  return cells;
+}
+
+/* 価格マスタ取得（Sheets 優先、失敗時はフォールバック） */
+async function getPriceMaster() {
+  const url = process.env.SHEETS_PRODUCTS_URL;
+  if (!url) return PRICE_MASTER_FALLBACK;
+
+  const now = Date.now();
+  if (_priceCache && now - _priceCacheTime < 300_000) return _priceCache;
+
+  try {
+    const res = await fetch(url, { signal: AbortSignal.timeout(6000) });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const rows = parseCSV(await res.text())
+      .filter(r => r.name && r.price && r.active?.toUpperCase() !== 'FALSE');
+
+    const prices = {};
+    for (const r of rows) prices[r.name] = parseInt(r.price, 10);
+
+    _priceCache = prices;
+    _priceCacheTime = now;
+    console.log('[Sheets] 価格取得成功:', Object.keys(prices).length, '件');
+    return prices;
+  } catch (err) {
+    console.warn('[Sheets] 価格取得失敗、フォールバック使用:', err.message);
+    return _priceCache || PRICE_MASTER_FALLBACK;
+  }
+}
+
 const CORS_HEADERS = {
   'Content-Type': 'application/json',
   'Access-Control-Allow-Origin': '*',
@@ -21,17 +76,11 @@ const CORS_HEADERS = {
 };
 
 exports.handler = async (event) => {
-  /* OPTIONS プリフライト */
   if (event.httpMethod === 'OPTIONS') {
     return { statusCode: 204, headers: CORS_HEADERS, body: '' };
   }
-
   if (event.httpMethod !== 'POST') {
-    return {
-      statusCode: 405,
-      headers: CORS_HEADERS,
-      body: JSON.stringify({ error: 'Method not allowed' }),
-    };
+    return { statusCode: 405, headers: CORS_HEADERS, body: JSON.stringify({ error: 'Method not allowed' }) };
   }
 
   try {
@@ -40,6 +89,9 @@ exports.handler = async (event) => {
     if (!Array.isArray(items) || items.length === 0) {
       throw new Error('カートが空です');
     }
+
+    /* スプレッドシートから最新価格を取得 */
+    const PRICE_MASTER = await getPriceMaster();
 
     let amount = 0;
     const lineItems = [];
@@ -57,7 +109,7 @@ exports.handler = async (event) => {
       lineItems.push(`${item.name} × ${qty}`);
     }
 
-    /* JPY は最小通貨単位が 1円（センなし）→ amount をそのまま渡す */
+    /* JPY は最小通貨単位が 1円 */
     const paymentIntent = await stripe.paymentIntents.create({
       amount,
       currency: 'jpy',

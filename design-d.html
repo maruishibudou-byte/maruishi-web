@@ -1617,6 +1617,11 @@
             transition: background .3s, color .3s, border-color .3s;
         }
         .shop-btn-cart:hover { background: var(--ink); color: var(--bg); }
+        .shop-loading {
+            grid-column: 1/-1; text-align: center;
+            padding: 4rem 0; font-size: .7rem;
+            letter-spacing: .2em; color: var(--mid);
+        }
         .shop-btn-cart.added {
             background: var(--accent); border-color: var(--accent); color: var(--white);
         }
@@ -2269,107 +2274,8 @@
         <p class="sec-title-jp">2026年産 予約受付中</p>
     </div>
     <p class="shop-note reveal">※ 2026年8月上旬より順次発送予定。完売次第終了となります。クール宅急便でのお届けです。</p>
-    <div class="shop-grid">
-
-        <div class="shop-card reveal">
-            <div class="shop-img-wrap">
-                <img class="shop-img" src="https://maru9.sakura.ne.jp/img/grapes_green_01.jpeg" alt="シャインマスカット" loading="lazy">
-                <span class="shop-badge">人気 No.1</span>
-            </div>
-            <div class="shop-info">
-                <span class="shop-color">黄緑系</span>
-                <h3 class="shop-name">シャインマスカット</h3>
-                <p class="shop-desc">芳醇なマスカット香と上品な甘み。皮ごと種なしで食べられる人気No.1品種。</p>
-                <div class="shop-price-row">
-                    <span class="shop-price">¥3,800<small>/房</small></span>
-                    <span class="shop-size">約500g</span>
-                </div>
-                <button class="shop-btn-cart" data-name="シャインマスカット" data-price="3800">カートに追加</button>
-            </div>
-        </div>
-
-        <div class="shop-card reveal d1">
-            <div class="shop-img-wrap">
-                <img class="shop-img" src="https://maru9.sakura.ne.jp/img/grapes_red_02.jpeg" alt="キタサキレッド" loading="lazy">
-                <span class="shop-badge">大府発祥 希少品種</span>
-            </div>
-            <div class="shop-info">
-                <span class="shop-color">赤系</span>
-                <h3 class="shop-name">キタサキレッド</h3>
-                <p class="shop-desc">北崎町生まれの希少品種。地名を冠した当園の誇り。贈答用に大変人気です。</p>
-                <div class="shop-price-row">
-                    <span class="shop-price">¥3,500<small>/房</small></span>
-                    <span class="shop-size">約450g</span>
-                </div>
-                <button class="shop-btn-cart" data-name="キタサキレッド" data-price="3500">カートに追加</button>
-            </div>
-        </div>
-
-        <div class="shop-card reveal d2">
-            <div class="shop-img-wrap">
-                <img class="shop-img" src="https://maru9.sakura.ne.jp/img/grapes_black_01.jpeg" alt="巨峰" loading="lazy">
-            </div>
-            <div class="shop-info">
-                <span class="shop-color">黒系</span>
-                <h3 class="shop-name">巨峰</h3>
-                <p class="shop-desc">大府の定番。大粒で果汁たっぷり、濃厚な甘みと芳醇な香り。種なし処理済み。</p>
-                <div class="shop-price-row">
-                    <span class="shop-price">¥2,800<small>/房</small></span>
-                    <span class="shop-size">約500g</span>
-                </div>
-                <button class="shop-btn-cart" data-name="巨峰" data-price="2800">カートに追加</button>
-            </div>
-        </div>
-
-        <div class="shop-card reveal">
-            <div class="shop-img-wrap">
-                <img class="shop-img" src="https://images.unsplash.com/photo-1683543124447-34b74f62d23b?w=600&q=80&fit=crop&auto=format" alt="ナガノパープル" loading="lazy">
-                <span class="shop-badge">皮ごと</span>
-            </div>
-            <div class="shop-info">
-                <span class="shop-color">黒系</span>
-                <h3 class="shop-name">ナガノパープル</h3>
-                <p class="shop-desc">甘さと酸味のバランスが絶妙。黒系でありながら皮ごと食べられる逸品。</p>
-                <div class="shop-price-row">
-                    <span class="shop-price">¥3,800<small>/房</small></span>
-                    <span class="shop-size">約480g</span>
-                </div>
-                <button class="shop-btn-cart" data-name="ナガノパープル" data-price="3800">カートに追加</button>
-            </div>
-        </div>
-
-        <div class="shop-card reveal d1">
-            <div class="shop-img-wrap">
-                <img class="shop-img" src="https://maru9.sakura.ne.jp/img/grapes_set_01.jpeg" alt="詰め合わせ 2房セット" loading="lazy">
-                <span class="shop-badge">贈答に人気</span>
-            </div>
-            <div class="shop-info">
-                <span class="shop-color">詰め合わせ</span>
-                <h3 class="shop-name">旬のぶどう 2房セット</h3>
-                <p class="shop-desc">シーズンの旬品種を2房セット。お任せまたは品種ご指定いただけます。</p>
-                <div class="shop-price-row">
-                    <span class="shop-price">¥6,800<small>/セット</small></span>
-                </div>
-                <button class="shop-btn-cart" data-name="旬のぶどう 2房セット" data-price="6800">カートに追加</button>
-            </div>
-        </div>
-
-        <div class="shop-card reveal d2">
-            <div class="shop-img-wrap">
-                <img class="shop-img" src="https://maru9.sakura.ne.jp/img/vineyard_02.jpg" alt="ギフトボックス 3房セット" loading="lazy">
-                <span class="shop-badge">熨斗・化粧箱対応</span>
-            </div>
-            <div class="shop-info">
-                <span class="shop-color">ギフト</span>
-                <h3 class="shop-name">ギフトボックス 3房セット</h3>
-                <p class="shop-desc">お中元・御礼に最適。化粧箱入り・熨斗対応。品種のご希望をお聞きします。</p>
-                <div class="shop-price-row">
-                    <span class="shop-price">¥9,800<small>/セット</small></span>
-                </div>
-                <button class="shop-btn-cart" data-name="ギフトボックス 3房セット" data-price="9800">カートに追加</button>
-            </div>
-        </div>
-
+    <div class="shop-grid" id="shop-grid">
+        <p class="shop-loading">読み込み中...</p>
     </div>
 </section>
 
@@ -3046,6 +2952,116 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
     }
 })();
 
+/* ── Google Sheets コンテンツ読み込み ── */
+(function() {
+
+    /* ============================================================
+       ★ スプレッドシートID設定
+       Google スプレッドシートの URL:
+       https://docs.google.com/spreadsheets/d/【ここ】/edit
+       の【ここ】の部分を貼り付けてください。
+       ============================================================ */
+    const SHEETS_ID = 'YOUR_SPREADSHEET_ID';
+    /* ============================================================ */
+
+    if (SHEETS_ID === 'YOUR_SPREADSHEET_ID') return; // 未設定時はスキップ
+
+    const csvUrl = sheet =>
+        `https://docs.google.com/spreadsheets/d/${SHEETS_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheet)}`;
+
+    /* CSV パーサー */
+    function parseCSV(text) {
+        const lines = text.trim().split(/\r?\n/);
+        const headers = splitCells(lines[0]).map(h => h.trim());
+        const rows = [];
+        for (let i = 1; i < lines.length; i++) {
+            const cells = splitCells(lines[i]);
+            if (cells.every(c => !c.trim())) continue;
+            rows.push(Object.fromEntries(headers.map((h, j) => [h, (cells[j] || '').trim()])));
+        }
+        return rows;
+    }
+
+    function splitCells(line) {
+        const cells = []; let cell = '', inQ = false;
+        for (const ch of line) {
+            if (ch === '"') inQ = !inQ;
+            else if (ch === ',' && !inQ) { cells.push(cell); cell = ''; }
+            else cell += ch;
+        }
+        cells.push(cell);
+        return cells;
+    }
+
+    /* 商品カード生成 */
+    function buildCard(p, i) {
+        const delay  = ['', ' d1', ' d2'][i % 3];
+        const badge  = p.badge ? `<span class="shop-badge">${p.badge}</span>` : '';
+        const size   = p.size  ? `<span class="shop-size">${p.size}</span>` : '';
+        const img    = p.image
+            ? `<img class="shop-img" src="${p.image}" alt="${p.name}" loading="lazy">`
+            : `<div class="shop-img" style="background:#f0ece4"></div>`;
+        const price  = parseInt(p.price) || 0;
+        return `
+            <div class="shop-card reveal${delay}">
+                <div class="shop-img-wrap">${img}${badge}</div>
+                <div class="shop-info">
+                    <span class="shop-color">${p.color || ''}</span>
+                    <h3 class="shop-name">${p.name}</h3>
+                    <p class="shop-desc">${p.description || ''}</p>
+                    <div class="shop-price-row">
+                        <span class="shop-price">¥${price.toLocaleString('ja-JP')}<small>/${p.unit || '房'}</small></span>
+                        ${size}
+                    </div>
+                    <button class="shop-btn-cart" data-name="${p.name}" data-price="${price}">カートに追加</button>
+                </div>
+            </div>`;
+    }
+
+    async function loadFromSheets() {
+        const grid = document.getElementById('shop-grid');
+        try {
+            /* ── 商品シート ── */
+            const r1 = await fetch(csvUrl('商品'));
+            if (!r1.ok) throw new Error('fetch failed');
+            const products = parseCSV(await r1.text())
+                .filter(p => p.name && p.price && p.active?.toUpperCase() !== 'FALSE');
+
+            if (grid && products.length) {
+                grid.innerHTML = products.map(buildCard).join('');
+            }
+
+            /* ── 設定シート ── */
+            const r2 = await fetch(csvUrl('設定'));
+            if (!r2.ok) return;
+            const settings = parseCSV(await r2.text());
+            const get = key => (settings.find(r => r.key === key) || {}).value || '';
+
+            const shopNote = get('shop_note');
+            if (shopNote) {
+                const el = document.querySelector('.shop-note');
+                if (el) el.textContent = shopNote;
+            }
+            const cartNote = get('cart_note');
+            if (cartNote) {
+                const el = document.querySelector('.cart-note');
+                if (el) el.textContent = cartNote;
+            }
+            const season = get('shop_season');
+            if (season) {
+                const el = document.querySelector('.shop-section .sec-title-jp');
+                if (el) el.textContent = season;
+            }
+
+        } catch (err) {
+            console.warn('[Sheets]', err.message);
+            if (grid) grid.innerHTML = '<p class="shop-loading">商品情報を取得できませんでした。しばらくしてから再読み込みしてください。</p>';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadFromSheets);
+})();
+
 /* ── Cart + Stripe Checkout ── */
 (function() {
 
@@ -3473,22 +3489,23 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
         }, 6000);
     })();
 
-    /* ── 商品をカートへ追加 ── */
-    document.querySelectorAll('.shop-btn-cart').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const name  = btn.dataset.name;
-            const price = parseInt(btn.dataset.price);
-            const exist = cart.find(i => i.name === name);
-            if (exist) exist.qty++;
-            else cart.push({ name, price, qty: 1 });
+    /* ── 商品をカートへ追加（イベント委譲 — 動的生成カードに対応） ── */
+    document.addEventListener('click', e => {
+        const btn = e.target.closest('.shop-btn-cart');
+        if (!btn) return;
+        const name  = btn.dataset.name;
+        const price = parseInt(btn.dataset.price);
+        if (!name || !price) return;
+        const exist = cart.find(i => i.name === name);
+        if (exist) exist.qty++;
+        else cart.push({ name, price, qty: 1 });
 
-            const orig = btn.textContent;
-            btn.textContent = '追加しました ✓';
-            btn.classList.add('added');
-            setTimeout(() => { btn.textContent = orig; btn.classList.remove('added'); }, 1800);
+        const orig = btn.textContent;
+        btn.textContent = '追加しました ✓';
+        btn.classList.add('added');
+        setTimeout(() => { btn.textContent = orig; btn.classList.remove('added'); }, 1800);
 
-            render(); updateBadge(); openCart();
-        });
+        render(); updateBadge(); openCart();
     });
 
     render();
