@@ -2,6 +2,11 @@
   publish = "."
   functions = "netlify/functions"
 
+[[redirects]]
+  from = "/"
+  to = "/design-d.html"
+  status = 200
+
 [dev]
   port = 8888
   autoLaunch = false
