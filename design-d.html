@@ -1721,6 +1721,42 @@
             font-size: .58rem; letter-spacing: .1em; color: var(--mid);
         }
 
+        /* 配送先フォーム */
+        .co-section-title {
+            font-size: .6rem; letter-spacing: .35em; color: var(--mid);
+            text-align: center; margin: 1.4rem 0 .85rem; position: relative;
+        }
+        .co-section-title::before, .co-section-title::after {
+            content: ''; position: absolute; top: 50%;
+            width: 26%; height: 1px; background: var(--border);
+        }
+        .co-section-title::before { left: 0; }
+        .co-section-title::after  { right: 0; }
+        .co-field { margin-bottom: .65rem; }
+        .co-field label {
+            display: block; font-size: .6rem; letter-spacing: .1em;
+            color: var(--mid); margin-bottom: .28rem;
+        }
+        .co-req { color: #df1b41; }
+        .co-field input, .co-field select {
+            width: 100%; padding: .55rem .7rem;
+            border: 1px solid var(--border); background: #fff; color: var(--ink);
+            font-family: 'Noto Sans JP', sans-serif; font-size: .82rem;
+            box-sizing: border-box; -webkit-appearance: none; border-radius: 0;
+            transition: border-color .2s;
+        }
+        .co-field input:focus, .co-field select:focus { outline: none; border-color: var(--ink2); }
+        .co-field input::placeholder { color: #ccc; font-size: .75rem; }
+        .co-field-row { display: flex; gap: .5rem; }
+        .co-field--zip { flex: 0 0 130px; }
+        .co-ship-confirm {
+            background: #fafaf8; border: 1px solid var(--border);
+            padding: .85rem 1rem; margin-bottom: 1.1rem;
+            font-size: .76rem; line-height: 1.8;
+        }
+        .co-ship-name { font-family: 'Noto Serif JP', serif; }
+        .co-ship-sub  { font-size: .7rem; color: var(--mid); }
+
         /* 支払い完了トースト */
         .payment-toast {
             position: fixed; top: -100px; left: 50%;
@@ -3014,15 +3050,12 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 (function() {
 
     /* =====================================================
-       ★ Stripe 設定 — ここを書き換えてください
-       Stripe ダッシュボード > 開発者 > API キー
-       > 「公開可能キー」をコピーして貼り付け
-       本番: pk_live_…   テスト: pk_test_…
+       ★ Stripe 設定
        ===================================================== */
     const STRIPE_PK = 'pk_test_51TjulmBX2dFmhFCMg0BOh2OYgtsLbb4geMsdZwCKdOjxUQpvMZOG6FUiT7PMSCcrOemrdqmkZQPKilhhGaxi1ufC005D5k5yYr';
-    /* ===================================================== */
-
     const PAYMENT_API = '/.netlify/functions/create-payment-intent';
+
+    const PREFS = ['北海道','青森県','岩手県','宮城県','秋田県','山形県','福島県','茨城県','栃木県','群馬県','埼玉県','千葉県','東京都','神奈川県','新潟県','富山県','石川県','福井県','山梨県','長野県','岐阜県','静岡県','愛知県','三重県','滋賀県','京都府','大阪府','兵庫県','奈良県','和歌山県','鳥取県','島根県','岡山県','広島県','山口県','徳島県','香川県','愛媛県','高知県','福岡県','佐賀県','長崎県','熊本県','大分県','宮崎県','鹿児島県','沖縄県'];
 
     let cart         = [];
     let stripeObj    = null;
@@ -3152,7 +3185,7 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
         updateTotal();
     }
 
-    /* ── Step 2: Stripe 決済画面を動的生成 ── */
+    /* ── Step 2: 配送先 → お支払い ── */
     function injectStep2() {
         const orderHtml = cart.map(item => `
             <div class="co-item">
@@ -3162,6 +3195,9 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
                     <span class="co-item-sub">${fmt(item.price * item.qty)}</span>
                 </div>
             </div>`).join('');
+
+        const prefOpts = PREFS.map(p => `<option value="${p}">${p}</option>`).join('');
+        const secureIcon = `<svg width="10" height="12" viewBox="0 0 24 28" fill="currentColor" aria-hidden="true"><path d="M20 12h-1V8a7 7 0 1 0-14 0v4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V14a2 2 0 0 0-2-2zm-9 6.72V21a1 1 0 0 0 2 0v-2.28A2 2 0 1 0 11 18.72zM16 12H8V8a4 4 0 0 1 8 0v4z"/></svg>`;
 
         bodyEl.innerHTML = `
             <div class="co-wrap">
@@ -3174,49 +3210,155 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
                     <span>合計（送料別）</span>
                     <strong>${fmt(sum())}</strong>
                 </div>
-                <div id="co-loading" class="co-loading">
-                    <div class="co-loading-bar"></div>
-                    <p>お支払い情報を準備しています...</p>
+
+                <!-- ① 配送先フォーム -->
+                <div id="co-sub-ship">
+                    <p class="co-section-title">配 送 先</p>
+                    <div class="co-field">
+                        <label>お名前 <span class="co-req">*</span></label>
+                        <input type="text" id="sh-name" placeholder="まるいし 太郎" autocomplete="name">
+                    </div>
+                    <div class="co-field-row">
+                        <div class="co-field co-field--zip">
+                            <label>郵便番号 <span class="co-req">*</span></label>
+                            <input type="text" id="sh-zip" placeholder="000-0000" maxlength="8" autocomplete="postal-code">
+                        </div>
+                    </div>
+                    <div class="co-field">
+                        <label>都道府県 <span class="co-req">*</span></label>
+                        <select id="sh-pref" autocomplete="address-level1">
+                            <option value="">選択してください</option>
+                            ${prefOpts}
+                        </select>
+                    </div>
+                    <div class="co-field">
+                        <label>市区町村・番地 <span class="co-req">*</span></label>
+                        <input type="text" id="sh-addr1" placeholder="大府市北崎町1丁目1番地" autocomplete="address-line1">
+                    </div>
+                    <div class="co-field">
+                        <label>マンション・部屋番号</label>
+                        <input type="text" id="sh-addr2" placeholder="（任意）" autocomplete="address-line2">
+                    </div>
+                    <div class="co-field">
+                        <label>電話番号 <span class="co-req">*</span></label>
+                        <input type="tel" id="sh-tel" placeholder="090-0000-0000" autocomplete="tel">
+                    </div>
+                    <div class="co-field">
+                        <label>配送希望日（2026年8月以降）</label>
+                        <input type="date" id="sh-date" min="2026-08-01" max="2026-10-31">
+                    </div>
+                    <p id="sh-error" class="co-error" role="alert"></p>
+                    <button class="co-submit" id="co-to-payment">お支払いへ進む →</button>
                 </div>
-                <form id="stripe-form" style="display:none" novalidate>
-                    <div id="payment-element"></div>
-                    <p id="co-error" class="co-error" role="alert"></p>
-                    <button type="submit" class="co-submit" id="co-submit" disabled>
-                        支払いを確定する
-                    </button>
-                </form>
-                <p class="co-secure">
-                    <svg width="10" height="12" viewBox="0 0 24 28" fill="currentColor" aria-hidden="true">
-                        <path d="M20 12h-1V8a7 7 0 1 0-14 0v4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V14a2 2 0 0 0-2-2zm-9 6.72V21a1 1 0 0 0 2 0v-2.28A2 2 0 1 0 11 18.72zM16 12H8V8a4 4 0 0 1 8 0v4z"/>
-                    </svg>
-                    Stripe による安全な決済（SSL 暗号化）
-                </p>
+
+                <!-- ② お支払いフォーム（初期非表示） -->
+                <div id="co-sub-pay" style="display:none">
+                    <div id="co-ship-confirm" class="co-ship-confirm"></div>
+                    <p class="co-section-title">お 支 払 い</p>
+                    <div id="co-loading" class="co-loading">
+                        <div class="co-loading-bar"></div>
+                        <p>お支払い情報を準備しています...</p>
+                    </div>
+                    <form id="stripe-form" style="display:none" novalidate>
+                        <div id="payment-element"></div>
+                        <p id="co-error" class="co-error" role="alert"></p>
+                        <button type="submit" class="co-submit" id="co-submit" disabled>
+                            注文を確定する
+                        </button>
+                    </form>
+                </div>
+
+                <p class="co-secure">${secureIcon} Stripe による安全な決済（SSL 暗号化）</p>
             </div>`;
 
-        document.getElementById('co-back')?.addEventListener('click', () => goStep(1));
-        initStripe();
+        /* 戻るボタン */
+        document.getElementById('co-back')?.addEventListener('click', () => {
+            const payEl = document.getElementById('co-sub-pay');
+            if (payEl && payEl.style.display !== 'none') {
+                payEl.style.display = 'none';
+                document.getElementById('co-sub-ship').style.display = '';
+                stripeObj = null; elementsObj = null;
+            } else {
+                goStep(1);
+            }
+        });
+
+        /* 配送先 → お支払いへ */
+        document.getElementById('co-to-payment')?.addEventListener('click', () => {
+            const errEl = document.getElementById('sh-error');
+            const err   = validateShipping();
+            if (err) { if (errEl) errEl.textContent = err; return; }
+            if (errEl) errEl.textContent = '';
+            showPaymentStep();
+        });
+    }
+
+    /* ── 配送先バリデーション ── */
+    function validateShipping() {
+        const required = [
+            ['sh-name',  'お名前'],
+            ['sh-zip',   '郵便番号'],
+            ['sh-pref',  '都道府県'],
+            ['sh-addr1', '市区町村・番地'],
+            ['sh-tel',   '電話番号'],
+        ];
+        for (const [id, label] of required) {
+            const el = document.getElementById(id);
+            if (!el || !el.value.trim()) return `${label}を入力してください`;
+        }
+        return null;
+    }
+
+    /* ── 配送先データ取得 ── */
+    function getShipping() {
+        return {
+            name:  document.getElementById('sh-name')?.value.trim()  || '',
+            zip:   document.getElementById('sh-zip')?.value.trim()   || '',
+            pref:  document.getElementById('sh-pref')?.value.trim()  || '',
+            addr1: document.getElementById('sh-addr1')?.value.trim() || '',
+            addr2: document.getElementById('sh-addr2')?.value.trim() || '',
+            tel:   document.getElementById('sh-tel')?.value.trim()   || '',
+            date:  document.getElementById('sh-date')?.value         || '',
+        };
+    }
+
+    /* ── お支払いステップ表示 ── */
+    async function showPaymentStep() {
+        const sh = getShipping();
+        document.getElementById('co-sub-ship').style.display = 'none';
+        document.getElementById('co-sub-pay').style.display  = '';
+
+        const confirmEl = document.getElementById('co-ship-confirm');
+        if (confirmEl) {
+            const addr2 = sh.addr2 ? `　${sh.addr2}` : '';
+            const date  = sh.date  ? `　配送希望日：${sh.date}` : '';
+            confirmEl.innerHTML = `
+                <p class="co-ship-name">${sh.name}</p>
+                <p class="co-ship-sub">〒${sh.zip}　${sh.pref}${sh.addr1}${addr2}</p>
+                <p class="co-ship-sub">☎ ${sh.tel}${date}</p>`;
+        }
+        await initStripe(sh);
     }
 
     /* ── Stripe 初期化 ── */
-    async function initStripe() {
+    async function initStripe(shipping) {
         const loadingEl = () => document.getElementById('co-loading');
         const formEl    = () => document.getElementById('stripe-form');
         const errorEl   = () => document.getElementById('co-error');
         const submitEl  = () => document.getElementById('co-submit');
 
         try {
-            /* サーバーで PaymentIntent を作成 */
             const res = await fetch(PAYMENT_API, {
                 method:  'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    items: cart.map(i => ({ name: i.name, qty: i.qty }))
+                    items:    cart.map(i => ({ name: i.name, qty: i.qty })),
+                    shipping: shipping || {},
                 }),
             });
             const data = await res.json();
             if (!res.ok || data.error) throw new Error(data.error || 'サーバーエラーが発生しました');
 
-            /* Stripe.js 初期化 */
             if (typeof Stripe === 'undefined') throw new Error('Stripe.js が読み込まれていません');
             stripeObj = Stripe(STRIPE_PK);
 
@@ -3226,14 +3368,14 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
                 appearance: {
                     theme: 'stripe',
                     variables: {
-                        colorPrimary:     '#1e1b18',
-                        colorBackground:  '#ffffff',
-                        colorText:        '#1e1b18',
-                        colorDanger:      '#df1b41',
-                        fontFamily:       '"Noto Sans JP", sans-serif',
-                        fontSizeBase:     '14px',
-                        borderRadius:     '0px',
-                        spacingUnit:      '4px',
+                        colorPrimary:    '#1e1b18',
+                        colorBackground: '#ffffff',
+                        colorText:       '#1e1b18',
+                        colorDanger:     '#df1b41',
+                        fontFamily:      '"Noto Sans JP", sans-serif',
+                        fontSizeBase:    '14px',
+                        borderRadius:    '0px',
+                        spacingUnit:     '4px',
                     },
                     rules: {
                         '.Input': { border: '1px solid #d8d3cb', boxShadow: 'none' },
@@ -3244,13 +3386,11 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
             const paymentEl = elementsObj.create('payment', { layout: 'tabs' });
             paymentEl.mount('#payment-element');
-
             paymentEl.on('ready', () => {
                 const l = loadingEl(); if (l) l.style.display = 'none';
                 const f = formEl();    if (f) f.style.display = '';
                 const s = submitEl();  if (s) s.removeAttribute('disabled');
             });
-
             paymentEl.on('loaderError', ({ error }) => {
                 const l = loadingEl();
                 if (l) l.innerHTML = `<p class="co-error">読み込みエラー: ${error.message}</p>`;
@@ -3263,13 +3403,13 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
             return;
         }
 
-        /* フォーム送信 */
         document.getElementById('stripe-form')?.addEventListener('submit', async e => {
             e.preventDefault();
             if (checkoutBusy) return;
             checkoutBusy = true;
 
-            const s = submitEl();
+            const sh = getShipping();
+            const s  = submitEl();
             const er = errorEl();
             if (er) er.textContent = '';
             if (s)  { s.disabled = true; s.textContent = '処理中...'; }
@@ -3277,14 +3417,25 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
             const returnUrl = `${location.origin}${location.pathname}?payment=success`;
             const { error } = await stripeObj.confirmPayment({
                 elements: elementsObj,
-                confirmParams: { return_url: returnUrl },
+                confirmParams: {
+                    return_url: returnUrl,
+                    shipping: {
+                        name:  sh.name,
+                        phone: sh.tel,
+                        address: {
+                            line1:       `${sh.addr1}${sh.addr2 ? ' ' + sh.addr2 : ''}`,
+                            city:        sh.pref,
+                            postal_code: sh.zip.replace('-', ''),
+                            country:     'JP',
+                        },
+                    },
+                },
             });
 
-            /* エラー時のみここに戻る（成功時は Stripe がリダイレクト） */
             checkoutBusy = false;
             if (error) {
                 if (er) er.textContent = error.message;
-                if (s)  { s.disabled = false; s.textContent = '支払いを確定する'; }
+                if (s)  { s.disabled = false; s.textContent = '注文を確定する'; }
             }
         });
     }

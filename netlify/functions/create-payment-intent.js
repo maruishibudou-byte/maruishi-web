@@ -35,7 +35,7 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { items } = JSON.parse(event.body);
+    const { items, shipping } = JSON.parse(event.body);
 
     if (!Array.isArray(items) || items.length === 0) {
       throw new Error('カートが空です');
@@ -63,9 +63,14 @@ exports.handler = async (event) => {
       currency: 'jpy',
       automatic_payment_methods: { enabled: true },
       metadata: {
-        items:  lineItems.join(', '),
-        total:  `¥${amount.toLocaleString('ja-JP')}`,
-        store:  'まるいし葡萄園',
+        items:         lineItems.join(', '),
+        total:         `¥${amount.toLocaleString('ja-JP')}`,
+        store:         'まるいし葡萄園',
+        ship_name:     shipping?.name  || '',
+        ship_zip:      shipping?.zip   || '',
+        ship_addr:     `${shipping?.pref || ''}${shipping?.addr1 || ''}${shipping?.addr2 ? ' ' + shipping.addr2 : ''}`,
+        ship_tel:      shipping?.tel   || '',
+        delivery_date: shipping?.date  || '未指定',
       },
       statement_descriptor_suffix: 'MARUISHI',
     });
