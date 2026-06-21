@@ -2972,8 +2972,9 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
     if (SHEETS_ID === 'YOUR_SPREADSHEET_ID') return; // 未設定時はスキップ
 
+    const SHEET_GIDS = { '商品': 0, '送料': 858027081, '設定': 34377454 };
     const csvUrl = sheet =>
-        `https://docs.google.com/spreadsheets/d/${SHEETS_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheet)}`;
+        `https://docs.google.com/spreadsheets/d/${SHEETS_ID}/pub?output=csv&gid=${SHEET_GIDS[sheet] ?? 0}`;
 
     /* CSV パーサー */
     function parseCSV(text) {
