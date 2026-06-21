@@ -1,8 +1,9 @@
-const SHEETS_ID = '183MYS9aWnB67JKS8LOsxVUlXcpC1VnXChY1E8WL2m8c';
+/* ウェブへの公開で発行される e/ 形式のURL（認証不要） */
+const PUBLISHED_EID = '2PACX-1vRyF-8OO7kNwpvuLkv7FdK9XC3aUZSeKLSqrwMy-KxRClfabKEVmRgUpJW6j3rfFNfVs8wk1m7xrQVH';
 const SHEET_GIDS = { '商品': 0, '送料': 858027081, '設定': 34377454 };
 
 function csvUrl(sheet) {
-  return `https://docs.google.com/spreadsheets/d/${SHEETS_ID}/pub?output=csv&gid=${SHEET_GIDS[sheet] ?? 0}`;
+  return `https://docs.google.com/spreadsheets/d/e/${PUBLISHED_EID}/pub?output=csv&gid=${SHEET_GIDS[sheet] ?? 0}`;
 }
 
 function parseCSV(text) {
