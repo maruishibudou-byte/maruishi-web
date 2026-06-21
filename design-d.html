@@ -2995,6 +2995,9 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
             if (grid && products.length) {
                 grid.innerHTML = products.map(buildCard).join('');
+                if (typeof observer !== 'undefined') {
+                    grid.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+                }
             }
 
             const get = key => settings[key] || '';
