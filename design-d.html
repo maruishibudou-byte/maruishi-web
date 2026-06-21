@@ -2995,9 +2995,14 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
             if (grid && products.length) {
                 grid.innerHTML = products.map(buildCard).join('');
-                if (typeof observer !== 'undefined') {
-                    grid.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-                }
+                grid.querySelectorAll('.reveal').forEach(el => {
+                    const r = el.getBoundingClientRect();
+                    if (r.top < window.innerHeight && r.bottom > 0) {
+                        el.classList.add('in');
+                    } else if (typeof observer !== 'undefined') {
+                        observer.observe(el);
+                    }
+                });
             }
 
             const get = key => settings[key] || '';
