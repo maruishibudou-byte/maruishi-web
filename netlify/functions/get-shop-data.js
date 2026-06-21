@@ -38,10 +38,15 @@ const CORS = {
 
 exports.handler = async () => {
   try {
+    const fetchOpts = {
+      redirect: 'follow',
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; NetlifyBot/1.0)' },
+      signal: AbortSignal.timeout(10000),
+    };
     const [r1, r2, r3] = await Promise.all([
-      fetch(csvUrl('商品'), { signal: AbortSignal.timeout(8000) }),
-      fetch(csvUrl('設定'), { signal: AbortSignal.timeout(8000) }),
-      fetch(csvUrl('送料'), { signal: AbortSignal.timeout(8000) }),
+      fetch(csvUrl('商品'), fetchOpts),
+      fetch(csvUrl('設定'), fetchOpts),
+      fetch(csvUrl('送料'), fetchOpts),
     ]);
 
     if (!r1.ok) throw new Error(`商品シート取得失敗: HTTP ${r1.status}`);
