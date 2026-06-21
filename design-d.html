@@ -2961,45 +2961,6 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 /* ── Google Sheets コンテンツ読み込み ── */
 (function() {
 
-    /* ============================================================
-       ★ スプレッドシートID設定
-       Google スプレッドシートの URL:
-       https://docs.google.com/spreadsheets/d/【ここ】/edit
-       の【ここ】の部分を貼り付けてください。
-       ============================================================ */
-    const SHEETS_ID = '183MYS9aWnB67JKS8LOsxVUlXcpC1VnXChY1E8WL2m8c';
-    /* ============================================================ */
-
-    if (SHEETS_ID === 'YOUR_SPREADSHEET_ID') return; // 未設定時はスキップ
-
-    const SHEET_GIDS = { '商品': 0, '送料': 858027081, '設定': 34377454 };
-    const csvUrl = sheet =>
-        `https://docs.google.com/spreadsheets/d/${SHEETS_ID}/pub?output=csv&gid=${SHEET_GIDS[sheet] ?? 0}`;
-
-    /* CSV パーサー */
-    function parseCSV(text) {
-        const lines = text.trim().split(/\r?\n/);
-        const headers = splitCells(lines[0]).map(h => h.trim());
-        const rows = [];
-        for (let i = 1; i < lines.length; i++) {
-            const cells = splitCells(lines[i]);
-            if (cells.every(c => !c.trim())) continue;
-            rows.push(Object.fromEntries(headers.map((h, j) => [h, (cells[j] || '').trim()])));
-        }
-        return rows;
-    }
-
-    function splitCells(line) {
-        const cells = []; let cell = '', inQ = false;
-        for (const ch of line) {
-            if (ch === '"') inQ = !inQ;
-            else if (ch === ',' && !inQ) { cells.push(cell); cell = ''; }
-            else cell += ch;
-        }
-        cells.push(cell);
-        return cells;
-    }
-
     /* 商品カード生成 */
     function buildCard(p, i) {
         const delay  = ['', ' d1', ' d2'][i % 3];
@@ -3028,21 +2989,15 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
     async function loadFromSheets() {
         const grid = document.getElementById('shop-grid');
         try {
-            /* ── 商品シート ── */
-            const r1 = await fetch(csvUrl('商品'));
-            if (!r1.ok) throw new Error('fetch failed');
-            const products = parseCSV(await r1.text())
-                .filter(p => p.name && p.price && p.active?.toUpperCase() !== 'FALSE');
+            const res = await fetch('/.netlify/functions/get-shop-data');
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const { products, settings, shippingRates } = await res.json();
 
             if (grid && products.length) {
                 grid.innerHTML = products.map(buildCard).join('');
             }
 
-            /* ── 設定シート ── */
-            const r2 = await fetch(csvUrl('設定'));
-            if (!r2.ok) return;
-            const settings = parseCSV(await r2.text());
-            const get = key => (settings.find(r => r.key === key) || {}).value || '';
+            const get = key => settings[key] || '';
 
             const shopNote = get('shop_note');
             if (shopNote) {
@@ -3061,19 +3016,7 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
             }
 
             window.__freeShippingMin = parseInt(get('free_shipping_min')) || 10000;
-
-            /* ── 送料シート ── */
-            const r3 = await fetch(csvUrl('送料'));
-            if (r3.ok) {
-                const shippingRows = parseCSV(await r3.text());
-                const ratesMap = {};
-                for (const row of shippingRows) {
-                    const fee = parseInt(row.fee);
-                    if (!fee) continue;
-                    row.prefectures.split(',').forEach(p => { ratesMap[p.trim()] = fee; });
-                }
-                window.__shippingRates = ratesMap;
-            }
+            window.__shippingRates = shippingRates || {};
 
         } catch (err) {
             console.warn('[Sheets]', err.message);
