@@ -1680,6 +1680,12 @@
             font-family: 'Cormorant Garamond', serif;
             font-size: 1.35rem; color: var(--ink); font-weight: 300;
         }
+        .co-total-row.co-grand-row {
+            border-top: 2px solid var(--ink2);
+            font-size: .76rem; color: var(--ink2);
+        }
+        .co-total-row.co-grand-row strong { font-size: 1.6rem; }
+        .co-shipping-free { color: var(--accent); }
 
         /* Stripe Elements コンテナ */
         #payment-element { margin-bottom: .9rem; }
@@ -3053,6 +3059,21 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
                 if (el) el.textContent = season;
             }
 
+            window.__freeShippingMin = parseInt(get('free_shipping_min')) || 10000;
+
+            /* ── 送料シート ── */
+            const r3 = await fetch(csvUrl('送料'));
+            if (r3.ok) {
+                const shippingRows = parseCSV(await r3.text());
+                const ratesMap = {};
+                for (const row of shippingRows) {
+                    const fee = parseInt(row.fee);
+                    if (!fee) continue;
+                    row.prefectures.split(',').forEach(p => { ratesMap[p.trim()] = fee; });
+                }
+                window.__shippingRates = ratesMap;
+            }
+
         } catch (err) {
             console.warn('[Sheets]', err.message);
             if (grid) grid.innerHTML = '<p class="shop-loading">商品情報を取得できませんでした。しばらくしてから再読み込みしてください。</p>';
@@ -3091,6 +3112,16 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
     const fmt = n => '¥' + n.toLocaleString('ja-JP');
     const sum = () => cart.reduce((s, i) => s + i.price * i.qty, 0);
+
+    function calcShipping(pref) {
+        if (!pref) return null;
+        const subtotal = sum();
+        const freeMin = window.__freeShippingMin || 10000;
+        if (subtotal >= freeMin) return 0;
+        const rates = window.__shippingRates || {};
+        const key = pref.replace(/[県都府]$/, '');
+        return rates[key] ?? 0;
+    }
 
     /* ── Open / Close ── */
     function openCart() {
@@ -3223,8 +3254,16 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
                 </div>
                 <div class="co-order">${orderHtml}</div>
                 <div class="co-total-row">
-                    <span>合計（送料別）</span>
+                    <span>小計</span>
                     <strong>${fmt(sum())}</strong>
+                </div>
+                <div class="co-total-row" id="co-shipping-row">
+                    <span>送料</span>
+                    <strong id="co-shipping-val">都道府県を選択してください</strong>
+                </div>
+                <div class="co-total-row co-grand-row">
+                    <span>合計（税込）</span>
+                    <strong id="co-grand-total">—</strong>
                 </div>
 
                 <!-- ① 配送先フォーム -->
@@ -3299,6 +3338,25 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
             }
         });
 
+        /* 都道府県変更 → 送料リアルタイム更新 */
+        function updateShippingDisplay() {
+            const pref   = document.getElementById('sh-pref')?.value || '';
+            const fee    = calcShipping(pref);
+            const shipEl = document.getElementById('co-shipping-val');
+            const grandEl = document.getElementById('co-grand-total');
+            if (fee === null) {
+                if (shipEl)  shipEl.textContent = '都道府県を選択してください';
+                if (grandEl) grandEl.textContent = '—';
+            } else if (fee === 0) {
+                if (shipEl)  shipEl.innerHTML = '<span class="co-shipping-free">無料</span>';
+                if (grandEl) grandEl.textContent = fmt(sum());
+            } else {
+                if (shipEl)  shipEl.textContent = fmt(fee);
+                if (grandEl) grandEl.textContent = fmt(sum() + fee);
+            }
+        }
+        document.getElementById('sh-pref')?.addEventListener('change', updateShippingDisplay);
+
         /* 配送先 → お支払いへ */
         document.getElementById('co-to-payment')?.addEventListener('click', () => {
             const errEl = document.getElementById('sh-error');
@@ -3346,12 +3404,18 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
         const confirmEl = document.getElementById('co-ship-confirm');
         if (confirmEl) {
-            const addr2 = sh.addr2 ? `　${sh.addr2}` : '';
-            const date  = sh.date  ? `　配送希望日：${sh.date}` : '';
+            const addr2    = sh.addr2 ? `　${sh.addr2}` : '';
+            const date     = sh.date  ? `　配送希望日：${sh.date}` : '';
+            const fee      = calcShipping(sh.pref);
+            const feeText  = fee === 0
+                ? '<span class="co-shipping-free">送料無料</span>'
+                : (fee ? `送料 ${fmt(fee)}` : '');
+            const grandTxt = fee !== null ? `　合計 ${fmt(sum() + (fee || 0))}` : '';
             confirmEl.innerHTML = `
                 <p class="co-ship-name">${sh.name}</p>
                 <p class="co-ship-sub">〒${sh.zip}　${sh.pref}${sh.addr1}${addr2}</p>
-                <p class="co-ship-sub">☎ ${sh.tel}${date}</p>`;
+                <p class="co-ship-sub">☎ ${sh.tel}${date}</p>
+                <p class="co-ship-sub" style="margin-top:.4rem">${feeText}${grandTxt}</p>`;
         }
         await initStripe(sh);
     }
