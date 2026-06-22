@@ -45,6 +45,10 @@
     }
     </script>
 
+    <meta name="theme-color" content="#f5f2ed">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://maru9.sakura.ne.jp">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Noto+Serif+JP:wght@200;300;400&family=Noto+Sans+JP:wght@300;400&display=swap" rel="stylesheet">
     <script src="https://js.stripe.com/v3/" async></script>
     <style>
@@ -372,6 +376,32 @@
         .about-body {
             padding-top: 1.5rem;
         }
+        .about-metrics {
+            grid-column: 1 / -1;
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            border-top: 1px solid var(--border);
+            padding-top: 3rem; margin-top: 1rem;
+        }
+        .about-metric {
+            padding: 0 2.5rem;
+            border-right: 1px solid var(--border);
+        }
+        .about-metric:first-child { padding-left: 0; }
+        .about-metric:last-child { border-right: none; }
+        .about-metric-num {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.2rem, 3.5vw, 3rem);
+            font-weight: 300; line-height: 1;
+            color: var(--ink); letter-spacing: .04em;
+        }
+        .about-metric-num small {
+            font-size: .38em; letter-spacing: .12em; margin-left: .15em;
+            color: var(--mid);
+        }
+        .about-metric-label {
+            font-size: .65rem; color: var(--mid);
+            letter-spacing: .18em; margin-top: .7rem; line-height: 1.7;
+        }
         .about-lead {
             font-family: 'Noto Serif JP', serif;
             font-size: clamp(1rem, 1.4vw, 1.2rem);
@@ -629,7 +659,7 @@
             color: var(--ink); margin-bottom: .6rem; line-height: 1.6;
         }
         .feat-desc {
-            font-size: .8rem; color: var(--mid); line-height: 2.1;
+            font-size: .84rem; color: var(--mid); line-height: 2.1;
         }
 
         /* ════════════════════════════
@@ -802,7 +832,7 @@
         }
         .daily-card:hover .daily-title { color: var(--accent); }
         .daily-body {
-            font-size: .75rem; color: var(--mid); line-height: 2;
+            font-size: .82rem; color: var(--mid); line-height: 2;
         }
         @media (max-width: 960px) {
             .daily-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1048,6 +1078,9 @@
             nav { grid-template-columns: auto 1fr auto; }
             .nav-logo { text-align: left; }
             .about { grid-template-columns: 1fr; gap: 3rem; padding: 8rem 6%; }
+            .about-metrics { grid-template-columns: 1fr; gap: 2rem; border-top: none; padding-top: 0; }
+            .about-metric { padding: 1.2rem 0; border-right: none; border-bottom: 1px solid var(--border); }
+            .about-metric:last-child { border-bottom: none; }
             .variety { padding: 0 6% 8rem; }
             .story-section, .order-access { grid-template-columns: 1fr; }
             .story-img-col { min-height: 55vw; }
@@ -2034,7 +2067,7 @@
         </div>
     </div>
     <p class="hc-sub">2026年8月上旬より直売所・オンライン販売を開始予定</p>
-    <a href="#variety" class="hc-cta">品種一覧を見る →</a>
+    <a href="#variety" class="hc-cta">今年の品種と収穫時期を見る →</a>
 </section>
 
 <!-- ══ SCROLL STORY — NUSET style ══ -->
@@ -2070,6 +2103,20 @@
         <div class="about-text">
             <p>化学農薬・化学肥料をできる限り使わない栽培は、手間も時間もかかります。それでも私たちがこの方法を選ぶのは、食べてくださるお客様の体はもちろん、土の中の微生物、そして次の世代のためでもあるからです。</p>
             <p>大府市北崎町は、海と山の気候が交差する独自の風土。この土地に根ざした19品種のぶどうが、それぞれの季節に実ります。</p>
+        </div>
+    </div>
+    <div class="about-metrics reveal d2">
+        <div class="about-metric">
+            <p class="about-metric-num">1972<small>年創業</small></p>
+            <p class="about-metric-label">50年以上の栽培歴</p>
+        </div>
+        <div class="about-metric">
+            <p class="about-metric-num">19<small>品種</small></p>
+            <p class="about-metric-label">赤・黄緑・黒系ぶどうを栽培</p>
+        </div>
+        <div class="about-metric">
+            <p class="about-metric-num">5<small>サイト</small></p>
+            <p class="about-metric-label">ふるさと納税対応プラットフォーム</p>
         </div>
     </div>
 </section>
@@ -2574,7 +2621,7 @@
                 お届けしています。
             </p>
             <a href="https://www.instagram.com/" target="_blank" rel="noopener" class="insta-link reveal d1">
-                Instagram をフォロー →
+                ぶどう園の今をInstagramで見る →
             </a>
         </div>
     </div>
