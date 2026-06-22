@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://deluxe-halva-975647.netlify.app/sitemap.xml
