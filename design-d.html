@@ -506,7 +506,7 @@
             box-shadow: inset 0 0 0 1px rgba(160,120,64,.3);
         }
         .v-img {
-            width: 100%; aspect-ratio: 4/5; object-fit: cover;
+            width: 100%; aspect-ratio: 1/1; object-fit: cover;
             display: block;
             transition: transform .9s cubic-bezier(.25,.46,.45,.94), opacity .4s ease;
             opacity: .92;
@@ -536,23 +536,6 @@
         .v-desc {
             font-size: .72rem; color: var(--mid); line-height: 1.9;
         }
-        .v-order-btn {
-            display: inline-block;
-            margin-top: 1.1rem;
-            font-size: .6rem; letter-spacing: .18em;
-            color: var(--accent); text-decoration: none;
-            border-bottom: 1px solid transparent;
-            transition: border-color .3s, opacity .3s;
-            padding-bottom: .1em;
-        }
-        .v-order-btn:hover { border-bottom-color: var(--accent); }
-        .v-order-btn.no-stock { color: var(--mid); pointer-events: none; }
-        .v-order-btn.matched::before {
-            content: '●';
-            font-size: .45rem; margin-right: .4em;
-            vertical-align: .1em;
-        }
-
         /* ════════════════════════════
            VARIETY SEARCH
         ════════════════════════════ */
@@ -1126,7 +1109,7 @@
                 scrollbar-width: none;
             }
             .variety-grid::-webkit-scrollbar { display: none; }
-            .v-card { flex: 0 0 72vw; scroll-snap-align: start; min-width: 0; }
+            .v-card { flex: 0 0 56vw; scroll-snap-align: start; min-width: 0; }
         }
 
         /* ══ RESPONSIVE — MOBILE (600px) — section paddings ══ */
@@ -1677,11 +1660,11 @@
         }
         .shop-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 3rem 2.4rem;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2.4rem 1.8rem;
         }
-        @media (max-width: 1100px) { .shop-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 600px) { .shop-grid { grid-template-columns: 1fr; gap: 2.4rem; } }
+        @media (max-width: 1100px) { .shop-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 600px) { .shop-grid { grid-template-columns: repeat(2, 1fr); gap: 1.8rem 1.2rem; } }
 
         .shop-card { background: var(--bg); }
         .shop-img-wrap {
@@ -2183,7 +2166,7 @@
     <div class="variety-grid">
 
         <!-- 黄緑系 -->
-        <div class="v-card reveal" data-cat="green skin">
+        <a href="#order" class="v-card reveal" data-cat="green skin">
             <div class="v-img-wrap">
                 <img class="v-img" src="https://maru9.sakura.ne.jp/img/grapes_green_01.jpeg" alt="シャインマスカット" loading="lazy">
             </div>
@@ -2193,10 +2176,9 @@
                 <span class="v-tag hi">皮ごと</span><span class="v-tag hi">種無し</span>
             </div>
             <p class="v-desc">芳醇なマスカット香と上品な甘み。人気No.1品種。</p>
-            <a href="#shop" class="v-order-btn">注文する →</a>
-        </div>
+        </a>
 
-        <div class="v-card reveal d1" data-cat="green skin">
+        <a href="#order" class="v-card reveal d1" data-cat="green skin">
             <div class="v-img-wrap">
                 <img class="v-img" src="img/variety_yuho.webp" alt="雄宝" loading="lazy">
             </div>
@@ -2206,10 +2188,9 @@
                 <span class="v-tag hi">皮ごと</span><span class="v-tag hi">種無し</span>
             </div>
             <p class="v-desc">宝のような大粒。ジューシーな果汁と爽やかな甘み。</p>
-            <a href="#shop" class="v-order-btn">注文する →</a>
-        </div>
+        </a>
 
-        <div class="v-card reveal d2" data-cat="green skin">
+        <a href="#order" class="v-card reveal d2" data-cat="green skin">
             <div class="v-img-wrap">
                 <img class="v-img" src="img/variety_jewel.webp" alt="ジュエルマスカット" loading="lazy">
             </div>
@@ -2219,10 +2200,9 @@
                 <span class="v-tag hi">皮ごと</span><span class="v-tag hi">種無し</span>
             </div>
             <p class="v-desc">宝石のような輝く緑色。濃厚な甘さとマスカット香。</p>
-            <a href="#shop" class="v-order-btn">注文する →</a>
-        </div>
+        </a>
 
-        <div class="v-card reveal d3" data-cat="green skin">
+        <a href="#order" class="v-card reveal d3" data-cat="green skin">
             <div class="v-img-wrap">
                 <img class="v-img" src="https://images.unsplash.com/photo-1697896562956-389ccf8b98c4?w=600&q=80&fit=crop&auto=format" alt="黄玉" loading="lazy">
             </div>
@@ -2232,10 +2212,9 @@
                 <span class="v-tag hi">皮ごと</span><span class="v-tag hi">種無し</span>
             </div>
             <p class="v-desc">黄金色の果皮が美しい希少品種。上品な甘みと香り。</p>
-            <a href="#shop" class="v-order-btn">注文する →</a>
-        </div>
+        </a>
 
-        <div class="v-card reveal" data-cat="green skin">
+        <a href="#order" class="v-card reveal" data-cat="green skin">
             <div class="v-img-wrap">
                 <img class="v-img" src="https://images.unsplash.com/photo-1725195398648-f3454b552b20?w=600&q=80&fit=crop&auto=format" alt="あっぱれ" loading="lazy">
             </div>
@@ -2245,10 +2224,9 @@
                 <span class="v-tag hi">皮ごと</span><span class="v-tag hi">種無し</span>
             </div>
             <p class="v-desc">その名の通り唸る甘さ。大粒で贈答にも映える一房。</p>
-            <a href="#shop" class="v-order-btn">注文する →</a>
-        </div>
+        </a>
 
-        <div class="v-card reveal d1" data-cat="green skin">
+        <a href="#order" class="v-card reveal d1" data-cat="green skin">
             <div class="v-img-wrap">
                 <img class="v-img" src="https://images.unsplash.com/photo-1630386188742-9d112e7b9b21?w=600&q=80&fit=crop&auto=format" alt="ベイジャーガン" loading="lazy">
             </div>
@@ -2258,11 +2236,10 @@
                 <span class="v-tag hi">皮ごと</span><span class="v-tag hi">種無し</span>
             </div>
             <p class="v-desc">リッチな甘みと豊かな果汁の大粒品種。</p>
-            <a href="#shop" class="v-order-btn">注文する →</a>
-        </div>
+        </a>
 
         <!-- 赤系 -->
-        <div class="v-card reveal" data-cat="red">
+        <a href="#order" class="v-card reveal" data-cat="red">
             <div class="v-img-wrap">
                 <img class="v-img" src="https://maru9.sakura.ne.jp/img/grapes_red_02.jpeg" alt="キタサキレッド" loading="lazy">
             </div>
@@ -2272,10 +2249,9 @@
                 <span class="v-tag hi">大府発祥</span><span class="v-tag hi">希少品種</span>
             </div>
             <p class="v-desc">北崎町生まれの希少品種。地名を冠した当園の誇り。</p>
-            <a href="#shop" class="v-order-btn">注文する →</a>
-        </div>
+        </a>
 
-        <div class="v-card reveal d1" data-cat="red">
+        <a href="#order" class="v-card reveal d1" data-cat="red">
             <div class="v-img-wrap">
                 <img class="v-img" src="img/variety_queennina.webp" alt="クイーンニーナ" loading="lazy">
             </div>
@@ -2285,10 +2261,9 @@
                 <span class="v-tag hi">種無し</span>
             </div>
             <p class="v-desc">濃厚な甘さと食べ応えのある果肉。贈答に人気大。</p>
-            <a href="#shop" class="v-order-btn">注文する →</a>
-        </div>
+        </a>
 
-        <div class="v-card reveal d2" data-cat="red skin">
+        <a href="#order" class="v-card reveal d2" data-cat="red skin">
             <div class="v-img-wrap">
                 <img class="v-img" src="img/variety_myheart.webp" alt="マイハート" loading="lazy">
             </div>
@@ -2298,10 +2273,9 @@
                 <span class="v-tag hi">皮ごと</span><span class="v-tag hi">種無し</span>
             </div>
             <p class="v-desc">優しい甘さとジューシーな果汁の愛らしい品種。</p>
-            <a href="#shop" class="v-order-btn">注文する →</a>
-        </div>
+        </a>
 
-        <div class="v-card reveal d3" data-cat="red skin">
+        <a href="#order" class="v-card reveal d3" data-cat="red skin">
             <div class="v-img-wrap">
                 <img class="v-img" src="img/variety_scarlet.webp" alt="スカーレット" loading="lazy">
             </div>
@@ -2311,11 +2285,10 @@
                 <span class="v-tag hi">皮ごと</span><span class="v-tag hi">種無し</span>
             </div>
             <p class="v-desc">鮮やかな赤色が美しい。さっぱりとした上品な甘さ。</p>
-            <a href="#shop" class="v-order-btn">注文する →</a>
-        </div>
+        </a>
 
         <!-- 黒系 -->
-        <div class="v-card reveal" data-cat="black">
+        <a href="#order" class="v-card reveal" data-cat="black">
             <div class="v-img-wrap">
                 <img class="v-img" src="https://maru9.sakura.ne.jp/img/grapes_black_01.jpeg" alt="巨峰" loading="lazy">
             </div>
@@ -2325,10 +2298,9 @@
                 <span class="v-tag hi">種無し</span>
             </div>
             <p class="v-desc">大府の定番。大粒で果汁たっぷり、濃厚な甘みと香り。</p>
-            <a href="#shop" class="v-order-btn">注文する →</a>
-        </div>
+        </a>
 
-        <div class="v-card reveal d1" data-cat="black skin">
+        <a href="#order" class="v-card reveal d1" data-cat="black skin">
             <div class="v-img-wrap">
                 <img class="v-img" src="img/variety_nagano.webp" alt="ナガノパープル" loading="lazy">
             </div>
@@ -2338,10 +2310,9 @@
                 <span class="v-tag hi">皮ごと</span><span class="v-tag hi">種無し</span>
             </div>
             <p class="v-desc">甘さと酸味のバランスが絶妙。皮ごと食べられる黒系。</p>
-            <a href="#shop" class="v-order-btn">注文する →</a>
-        </div>
+        </a>
 
-        <div class="v-card reveal d2" data-cat="black">
+        <a href="#order" class="v-card reveal d2" data-cat="black">
             <div class="v-img-wrap">
                 <img class="v-img" src="https://images.unsplash.com/photo-1714779044371-f5161c65fd68?w=600&q=80&fit=crop&auto=format" alt="ピオーネ" loading="lazy">
             </div>
@@ -2351,10 +2322,9 @@
                 <span class="v-tag hi">種無し</span>
             </div>
             <p class="v-desc">深い紫色と芳醇な香りが特長のぶどう定番品種。</p>
-            <a href="#shop" class="v-order-btn">注文する →</a>
-        </div>
+        </a>
 
-        <div class="v-card reveal d3" data-cat="black skin">
+        <a href="#order" class="v-card reveal d3" data-cat="black skin">
             <div class="v-img-wrap">
                 <img class="v-img" src="https://images.unsplash.com/photo-1683543124447-34b74f62d23b?w=600&q=80&fit=crop&auto=format" alt="マスカットノワール" loading="lazy">
             </div>
@@ -2364,10 +2334,9 @@
                 <span class="v-tag hi">皮ごと</span><span class="v-tag hi">種無し</span>
             </div>
             <p class="v-desc">黒系でありながら皮ごと食べられる希少品種。</p>
-            <a href="#shop" class="v-order-btn">注文する →</a>
-        </div>
+        </a>
 
-        <div class="v-card reveal" data-cat="black skin">
+        <a href="#order" class="v-card reveal" data-cat="black skin">
             <div class="v-img-wrap">
                 <img class="v-img" src="https://images.unsplash.com/photo-1760368104790-8df6623ed7a4?w=600&q=80&fit=crop&auto=format" alt="グロースクローネ" loading="lazy">
             </div>
@@ -2377,10 +2346,9 @@
                 <span class="v-tag hi">皮ごと</span><span class="v-tag hi">種無し</span>
             </div>
             <p class="v-desc">風格ある姿と力強い味わいの黒系大粒品種。</p>
-            <a href="#shop" class="v-order-btn">注文する →</a>
-        </div>
+        </a>
 
-        <div class="v-card reveal d1" data-cat="black">
+        <a href="#order" class="v-card reveal d1" data-cat="black">
             <div class="v-img-wrap">
                 <img class="v-img" src="https://images.unsplash.com/photo-1683543124447-34b74f62d23b?w=600&q=80&fit=crop&auto=format" alt="藤稔" loading="lazy">
             </div>
@@ -2390,10 +2358,9 @@
                 <span class="v-tag hi">種無し</span>
             </div>
             <p class="v-desc">果汁たっぷり濃厚な味わい。大粒で食べ応えがある。</p>
-            <a href="#shop" class="v-order-btn">注文する →</a>
-        </div>
+        </a>
 
-        <div class="v-card reveal d2" data-cat="black">
+        <a href="#order" class="v-card reveal d2" data-cat="black">
             <div class="v-img-wrap">
                 <img class="v-img" src="https://images.unsplash.com/photo-1579008842752-f900a8176d85?w=600&q=80&fit=crop&auto=format" alt="BKシードレス" loading="lazy">
             </div>
@@ -2403,10 +2370,9 @@
                 <span class="v-tag hi">種無し</span>
             </div>
             <p class="v-desc">巨峰系の濃厚な甘みを種なしで。豊かな果汁とコク。</p>
-            <a href="#shop" class="v-order-btn">注文する →</a>
-        </div>
+        </a>
 
-        <div class="v-card reveal d3" data-cat="black">
+        <a href="#order" class="v-card reveal d3" data-cat="black">
             <div class="v-img-wrap">
                 <img class="v-img" src="https://images.unsplash.com/photo-1714779044371-f5161c65fd68?w=600&q=80&fit=crop&auto=format" alt="マリオ" loading="lazy">
             </div>
@@ -2416,8 +2382,7 @@
                 <span class="v-tag hi">種無し</span>
             </div>
             <p class="v-desc">芳醇な香りと深い甘さ。複雑な風味が根強く人気。</p>
-            <a href="#shop" class="v-order-btn">注文する →</a>
-        </div>
+        </a>
 
     </div>
     <p class="variety-scroll-hint" aria-hidden="true">← スワイプして品種を見る →</p>
@@ -3147,9 +3112,8 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
             ? `<img class="shop-img" src="${p.image}" alt="${p.name}" loading="lazy">`
             : `<div class="shop-img" style="background:#f0ece4"></div>`;
         const price  = parseInt(p.price) || 0;
-        const safeId = 'sp-' + p.name;
         return `
-            <div class="shop-card reveal${delay}" id="${safeId}">
+            <div class="shop-card reveal${delay}">
                 <div class="shop-img-wrap">${img}${badge}</div>
                 <div class="shop-info">
                     <span class="shop-color">${p.color || ''}</span>
@@ -3182,23 +3146,6 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
                     }
                 });
 
-                // 品種カードの「注文する」ボタンを対応商品にリンク
-                document.querySelectorAll('.v-card').forEach(card => {
-                    const vname = card.querySelector('.v-name')?.textContent.trim();
-                    const btn   = card.querySelector('.v-order-btn');
-                    if (!vname || !btn) return;
-                    const match = products.find(p =>
-                        p.name.includes(vname) || vname.includes(p.name)
-                    );
-                    if (match) {
-                        btn.href = '#sp-' + match.name;
-                        btn.textContent = '注文する →';
-                        btn.classList.add('matched');
-                    } else {
-                        btn.textContent = '在庫なし';
-                        btn.classList.add('no-stock');
-                    }
-                });
             }
 
             const get = key => settings[key] || '';
